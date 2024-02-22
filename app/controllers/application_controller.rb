@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
             user_id = payload["user_id"]["$oid"]
             @user = User.find_by(id: user_id)
             raise Exceptions::AuthenticationError if @user.nil?
-        rescue Exceptions::AuthenticationError
+            rescue Exceptions::AuthenticationError
             render json: {message: "Authentication Failed"}, status: :unauthorized
         end
     end
