@@ -28,6 +28,7 @@ class User
     TokenHandler.encode(user_hash, expiry: 1.hours.from_now.to_i)
   end
 
+
   private
 
   def hash_password

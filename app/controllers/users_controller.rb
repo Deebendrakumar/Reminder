@@ -14,12 +14,9 @@ class UsersController < ApplicationController
         raise Exceptions::AuthenticationError if auth_header.nil?
         payload = TokenHandler.decode(auth_header)
         raise Exceptions::AuthenticationError if payload.nil?
-        binding.pry
         user_id = payload["_id"]["$oid"]
-        email_id = payload["email"]
-        @user = User.find_by(_id: user_id)
-        @email = User.find_by(email: email_id)
-        raise Exceptions::AuthenticationError if @user.nil? & @email.nil?
+        @user = User.find_by(id: user_id)
+        raise Exceptions::AuthenticationError if @user.nil?
         render json: {message: "Verified_email"}, status: 200
       rescue Exceptions::AuthenticationError
         render json: {message: "Authentication Failed"}, status: :unauthorized
@@ -42,8 +39,7 @@ class UsersController < ApplicationController
     end
 
     def update
-      if @user.update!(name: params[:name], mobile_number: params[:mobile_number])
-        binding.pry
+      if @user.update!(name: params[:name])
         render json: {message: 'Success'}
       else
         render json: {message: 'failed'}
