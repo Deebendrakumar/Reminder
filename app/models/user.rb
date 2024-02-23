@@ -32,8 +32,8 @@ class User
   private
 
   def hash_password
-    if password.present?
-      self.password_digest = BCrypt::Password.create(password)
+    if password_digest.present?
+      self.password_digest = BCrypt::Password.create(password_digest)
     end
   end
 end

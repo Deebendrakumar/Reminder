@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
     
     before_action :validate_user, except: [:signup, :login, :verify_email]
-    require 'token_handler'
+    # require 'token_handler'
 
     def signup
       @user = User.create!(user_params)
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
   
     def login
       user = User.find_by(email: params[:email])
-      if user.authenticate(params[:password])
+      if user.authenticate(params[:password_digest])
         token = TokenHandler.encode({ user_id: user.id })
         render json: {message: 'loggedin Successfully', token: token}, status: 200
       else
@@ -35,11 +35,11 @@ class UsersController < ApplicationController
 
     def profile
         @user 
-        render json: {users: @user}, status: 201
+        render json: {name: @user.name, email: @user.email, mobile_number: @user.mobile_number}, status: 201
     end
 
     def update
-      if @user.update!(name: params[:name])
+      if @user.update!(name: params[:name], mobile_number: params[:mobile_number])
         render json: {message: 'Success'}
       else
         render json: {message: 'failed'}
@@ -52,7 +52,7 @@ class UsersController < ApplicationController
 
     private
     def user_params
-      params.permit(:name, :email, :mobile_number, :password)
+      params.permit(:name, :email, :mobile_number, :password_digest)
     end
 end
 
