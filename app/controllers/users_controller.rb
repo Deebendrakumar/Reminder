@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
     
     before_action :validate_user, except: [:signup, :login, :verify_email]
-    # require 'token_handler'
 
     def signup
       @user = User.create!(user_params)
@@ -35,7 +34,7 @@ class UsersController < ApplicationController
 
     def profile
         @user 
-        render json: {name: @user.name, email: @user.email, mobile_number: @user.mobile_number}, status: 201
+        render json: {name: @user.name, email: @user.email, mobile_number: @user.mobile_number}, status: 200
     end
 
     def update

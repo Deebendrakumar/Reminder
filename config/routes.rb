@@ -11,6 +11,12 @@ Rails.application.routes.draw do
   patch 'update', to: 'users#update'
   post 'verify_email', to: 'users#verify_email'
 
+  resources :event_dates do
+    resources :user_events do
+      resources :event_reminders
+    end
+  end
+
   # Defines the root path route ("/")
   # root "posts#index"
 end
