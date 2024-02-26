@@ -3,7 +3,7 @@ class User
   include Mongoid::Timestamps
 
   field :name, type: String
-  field :email, type: String 
+  field :email, type: String
   field :mobile_number, type: String
   field :password_digest, type: String
   validates :name, presence: true, length: { minimum: 2 }
@@ -12,18 +12,24 @@ class User
   validates :password_digest, presence: true
 
   # attr_accessor :password
-  embeds_many :event_dates 
+  embeds_many :event_dates
   before_save :hash_password
 
   def authenticate(unencrypted_password)
-    BCrypt::Password.new(password_digest) == unencrypted_password && self
+    BCrypt::Password.new(password_digest) == unencrypted_password
   end
 
   def email_verification
-    user_hash = self.as_json(only: [:_id, :email])
-    TokenHandler.encode(user_hash, expiry: 1.hours.from_now.to_i)
+    token('email_verification')
   end
 
+  def token(process)
+    TokenHandler.encode(self.as_json(only: [:_id, :email]).merge({process: process}), expiry: 1.hours.from_now.to_i)
+  end
+
+  def reset_password_email
+    token('reset_password')
+  end
 
   private
 
