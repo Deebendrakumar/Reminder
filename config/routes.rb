@@ -23,6 +23,8 @@ Rails.application.routes.draw do
         end
       end
     end
+  delete 'delete', to: 'users#delete'
+
 
   # Defines the root path route ("/")
   # root "posts#index"

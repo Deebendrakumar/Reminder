@@ -24,6 +24,7 @@ class UsersController < ApplicationController
       user = User.find_by(email: params[:email])
       if user.authenticate(params[:password_digest])
         token = TokenHandler.encode({ user_id: user.id })
+        binding.pry
         render json: {message: 'loggedin Successfully', token: token}, status: :ok
       else
         render json: { error: 'Invalid credentials' }, status: :bad_request
@@ -63,7 +64,8 @@ class UsersController < ApplicationController
     end
 
     def delete
-
+      @user.destroy
+      render json: {message: 'Deletion Successful'}, status: :ok
     end
 
     private

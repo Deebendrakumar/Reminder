@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
     def validate_user
         auth_header = request.headers['Authorization']
         payload = TokenHandler.decode(auth_header)
+        binding.pry
         raise Exceptions::AuthenticationError if payload.nil?
         user_id = payload["user_id"]["$oid"]
         @user = User.find_by(id: user_id)
