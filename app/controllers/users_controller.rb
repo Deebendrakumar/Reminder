@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-    before_action :validate_user, except: [:signup, :login, :verify_email]
+    before_action :validate_user, except: [:signup, :login, :verify_email, :reset_password]
 
     before_action :decode, only: [:verify_email, :reset_password]
 
@@ -11,9 +11,9 @@ class UsersController < ApplicationController
 
     def verify_email
       begin
-        raise 'Invalid token' if payload["process"] == 'email_verification'
+        raise 'Invalid token' if !@payload["process"] == 'email_verification'
         user_from_token
-        render json: {message: "Password Reset successful"}, status: 200
+        render json: {message: "Email Verified"}, status: 200
       rescue Exceptions::AuthenticationError
         render json: {message: "Authentication Failed"}, status: :unauthorized
       end
@@ -25,20 +25,24 @@ class UsersController < ApplicationController
         token = TokenHandler.encode({ user_id: user.id })
         render json: {message: 'loggedin Successfully', token: token}, status: :ok
       else
-        render json: { error: 'Invalid credentials' }, status: :BadRequest
+        render json: {message: 'Invalid credentials' }, status: :bad_request
       end
     end
 
     def password_reset_link
+      binding.pry
       email = params[:email]
-      user = User.find_by(email)
+      user = User.find_by(email: email)
       user.reset_password_email
     end
 
     def reset_password
       begin
-        raise 'Invalid token' if payload["process"] == 'reset_password'
+        binding.pry
+        raise 'Invalid token' if !@payload["process"] == 'reset_password'
         user_from_token
+        @user.password_digest=params[:password_digest]
+        @user.save
         # reset password from params
         render json: {message: "Password Reset successful"}, status: 200
       rescue Exceptions::AuthenticationError
@@ -69,12 +73,14 @@ class UsersController < ApplicationController
     end
 
     def decode
+      binding.pry
       auth_header = params['token']
       @payload = TokenHandler.decode(auth_header)
       raise Exceptions::AuthenticationError if @payload.nil?
     end
 
     def user_from_token
+      binding.pry
       user_id = @payload["_id"]["$oid"]
       @user = User.find_by(id: user_id)
       raise Exceptions::AuthenticationError if @user.nil?

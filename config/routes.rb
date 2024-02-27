@@ -10,12 +10,12 @@ Rails.application.routes.draw do
   get 'profile', to: 'users#profile'
   patch 'update', to: 'users#update'
   post 'verify_email', to: 'users#verify_email'
+  get 'password_reset_link', to: 'users#password_reset_link'
+  post 'reset_password', to: 'users#reset_password'
 
-  resources :event_dates do
     resources :user_events do
       resources :event_reminders
     end
-  end
 
   # Defines the root path route ("/")
   # root "posts#index"

@@ -12,7 +12,7 @@ class User
   validates :password_digest, presence: true
 
   # attr_accessor :password
-  embeds_many :event_dates
+  embeds_many :user_events
   before_save :hash_password
 
   def authenticate(unencrypted_password)
@@ -28,6 +28,7 @@ class User
   end
 
   def reset_password_email
+    binding.pry
     token('reset_password')
   end
 

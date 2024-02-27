@@ -1,9 +1,10 @@
 class ApplicationController < ActionController::Base
     skip_before_action :verify_authenticity_token
 
-    rescue_from Exception, with: :error
+    # rescue_from Exception, with: :error
 
     def validate_user
+        binding.pry
         auth_header = request.headers['Authorization']
         payload = TokenHandler.decode(auth_header)
         raise Exceptions::AuthenticationError if payload.nil?
@@ -13,6 +14,7 @@ class ApplicationController < ActionController::Base
     end
 
     def error(e)
+        binding.pry
         case e.class.name
         when Errors::Unprocessable.name
           render_response(e.errors, 422)
