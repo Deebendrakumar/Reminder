@@ -12,13 +12,16 @@ Rails.application.routes.draw do
   post 'verify_email', to: 'users#verify_email'
   get 'password_reset_link', to: 'users#password_reset_link'
   post 'reset_password', to: 'users#reset_password'
-
   
     resources :user_events do
       collection do
         get 'search'
       end
-      resources :event_reminders
+      resources :event_reminders do
+        collection do
+          get 'search'
+        end
+      end
     end
 
   # Defines the root path route ("/")

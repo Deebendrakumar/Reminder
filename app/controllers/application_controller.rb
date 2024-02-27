@@ -12,18 +12,24 @@ class ApplicationController < ActionController::Base
 
     def error(e)
         case e.class.name
-        when Errors::Unprocessable.name
-          render_response(e.errors, 422)
+        # when Errors::Unprocessable.name
+        #   render_response(e.errors, 422)
         when Exceptions::AuthenticationError.name
           render_response([e.message], 401)
-        when ActiveRecord::RecordInvalid.name
-          render_response({ message: e }, 500)
-        when Errors::Jwt.name
-          render_response({ message: e }, 401)
+        # when ActiveRecord::RecordInvalid.name
+        #   render_response({ message: e }, 500)
+        # when Errors::Jwt.name
+        #   render_response({ message: e }, 401)
         else
-          render_response({ message: e }, 500)
-          ErrorNotifier.notify(e, payload: params.merge(email: @current_user&.email, details: response&.body))
+          render_response({ message: e.class.name }, 500)
+          # ErrorNotifier.notify(e, payload: params.merge(email: @current_user&.email, details: response&.body))
           puts e.message
         end
     end
+
+
+    def render_response(payload, status = :ok)
+      render json: payload, status: status
+    end
 end
+

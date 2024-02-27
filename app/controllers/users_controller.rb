@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
 
-    before_action :validate_user, except: [:signup, :login, :verify_email, :reset_password]
+    before_action :validate_user, except: [:signup, :login, :verify_email, :password_reset_link, :reset_password]
+
     before_action :decode, only: [:verify_email, :reset_password]
 
     def signup
@@ -11,8 +12,9 @@ class UsersController < ApplicationController
     def verify_email
       begin
         raise 'Invalid token' if !@payload["process"] == 'email_verification'
+        binding.pry
         user_from_token
-        render json: {message: "Email Verified"}, status: 200
+        render json: {message: "Email Verificaton successful"}, status: 200
       rescue Exceptions::AuthenticationError
         render json: {message: "Authentication Failed"}, status: :unauthorized
       end
@@ -24,14 +26,15 @@ class UsersController < ApplicationController
         token = TokenHandler.encode({ user_id: user.id })
         render json: {message: 'loggedin Successfully', token: token}, status: :ok
       else
-        render json: {message: 'Invalid credentials' }, status: :bad_request
+        render json: { error: 'Invalid credentials' }, status: :bad_request
       end
     end
 
     def password_reset_link
       email = params[:email]
       user = User.find_by(email: email)
-      user.reset_password_email
+      token = user.reset_password_email
+      render json: {token: token}
     end
 
     def reset_password
