@@ -38,7 +38,7 @@ class EventRemindersController < ApplicationController
 
     private
     def user_params
-        params.permit(:reminder_name, :time, :status, :is_pinned, :description)
+        params.permit(:reminder_name, :time, :status, :is_pinned)
     end
 
     def getting
