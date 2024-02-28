@@ -7,6 +7,7 @@ class UserEventsController < ApplicationController
       @user_event = @user.user_events.find_by(id: params[:id])
     end
 
+
     def create
       @event = @user.user_events.create!(user_event_params)
       render json: {message: 'Created Successfully'}, status: 200

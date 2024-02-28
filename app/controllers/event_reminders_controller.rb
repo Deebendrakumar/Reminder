@@ -6,7 +6,6 @@ class EventRemindersController < ApplicationController
     def create
         @user_event = @user.user_events.find_by(id: params[:user_event_id])
         @reminder = @user_event.event_reminders.create!(user_params)
-
         render json: {message: 'Reminder Created Successfully'}, status: :ok
     end
 
