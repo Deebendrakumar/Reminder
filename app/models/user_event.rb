@@ -5,8 +5,8 @@ class UserEvent
   field :title, type: String
   field :date, type: Date
   field :status, type: String, default: "active"
-  field :is_pinned, type: Mongoid::Boolean, default: false
-  
+  field :is_pinned, type: Mongoid::Boolean, default: false  
+    
   embeds_many :event_reminders
   embedded_in :user
 

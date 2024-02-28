@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
 
     before_action :validate_user, except: [:signup, :login, :verify_email, :reset_password]
-
     before_action :decode, only: [:verify_email, :reset_password]
 
     def signup
@@ -30,7 +29,6 @@ class UsersController < ApplicationController
     end
 
     def password_reset_link
-      binding.pry
       email = params[:email]
       user = User.find_by(email: email)
       user.reset_password_email
@@ -38,12 +36,10 @@ class UsersController < ApplicationController
 
     def reset_password
       begin
-        binding.pry
         raise 'Invalid token' if !@payload["process"] == 'reset_password'
         user_from_token
         @user.password_digest=params[:password_digest]
         @user.save
-        # reset password from params
         render json: {message: "Password Reset successful"}, status: 200
       rescue Exceptions::AuthenticationError
         render json: {message: "Authentication Failed"}, status: :unauthorized
@@ -73,19 +69,14 @@ class UsersController < ApplicationController
     end
 
     def decode
-      binding.pry
       auth_header = params['token']
       @payload = TokenHandler.decode(auth_header)
       raise Exceptions::AuthenticationError if @payload.nil?
     end
 
     def user_from_token
-      binding.pry
       user_id = @payload["_id"]["$oid"]
       @user = User.find_by(id: user_id)
       raise Exceptions::AuthenticationError if @user.nil?
     end
 end
-
-
-# ,  sending: UserMailer.send_email(@user).deliver_now

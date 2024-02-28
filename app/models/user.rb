@@ -11,7 +11,6 @@ class User
   validates :mobile_number, presence: true, numericality: true, length: { is: 10 }
   validates :password_digest, presence: true
 
-  # attr_accessor :password
   embeds_many :user_events
   before_save :hash_password
 
@@ -28,7 +27,6 @@ class User
   end
 
   def reset_password_email
-    binding.pry
     token('reset_password')
   end
 

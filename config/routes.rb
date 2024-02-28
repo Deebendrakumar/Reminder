@@ -13,7 +13,11 @@ Rails.application.routes.draw do
   get 'password_reset_link', to: 'users#password_reset_link'
   post 'reset_password', to: 'users#reset_password'
 
+  
     resources :user_events do
+      collection do
+        get 'search'
+      end
       resources :event_reminders
     end
 
